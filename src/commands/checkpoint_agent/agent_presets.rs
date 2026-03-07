@@ -39,7 +39,7 @@ pub trait AgentCheckpointPreset {
 pub struct ClaudePreset;
 
 fn tool_name_override() -> Option<String> {
-    env::var("GIT_AI_OVERRIDE_TOOL_NAME").ok()
+    env::var("GIT_AI_OVERRIDE_TOOL_NAME").ok().filter(|s| !s.trim().is_empty())
 }
 
 
