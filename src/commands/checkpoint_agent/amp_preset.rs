@@ -12,6 +12,7 @@ use crate::{
 use chrono::DateTime;
 use serde::Deserialize;
 use std::collections::HashMap;
+use std::env;
 use std::path::{Path, PathBuf};
 
 pub struct AmpPreset;
@@ -134,7 +135,7 @@ impl AgentCheckpointPreset for AmpPreset {
         }
 
         let agent_id = AgentId {
-            tool: "amp".to_string(),
+            tool: env::var("GIT_AI_OVERRIDE_TOOL_NAME").ok().unwrap_or_else(|| "amp".to_string()),
             id: resolved_thread_id
                 .or(hook_input.tool_use_id.clone())
                 .unwrap_or_else(|| "unknown".to_string()),

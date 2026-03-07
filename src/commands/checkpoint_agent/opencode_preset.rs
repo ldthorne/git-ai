@@ -13,6 +13,7 @@ use chrono::DateTime;
 use rusqlite::{Connection, OpenFlags};
 use serde::Deserialize;
 use std::collections::HashMap;
+use std::env;
 use std::path::{Path, PathBuf};
 
 pub struct OpenCodePreset;
@@ -197,7 +198,7 @@ impl AgentCheckpointPreset for OpenCodePreset {
             };
 
         let agent_id = AgentId {
-            tool: "opencode".to_string(),
+            tool: env::var("GIT_AI_OVERRIDE_TOOL_NAME").ok().unwrap_or_else(|| "opencode".to_string()),
             id: session_id.clone(),
             model: model.unwrap_or_else(|| "unknown".to_string()),
         };

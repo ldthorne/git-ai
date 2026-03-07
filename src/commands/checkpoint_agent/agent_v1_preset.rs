@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::env;
 
 use serde::{Deserialize, Serialize};
 
@@ -82,7 +83,7 @@ impl AgentCheckpointPreset for AgentV1Preset {
                 dirty_files,
             } => Ok(AgentRunResult {
                 agent_id: AgentId {
-                    tool: agent_name,
+                    tool: env::var("GIT_AI_OVERRIDE_TOOL_NAME").ok().unwrap_or(agent_name),
                     id: conversation_id,
                     model,
                 },

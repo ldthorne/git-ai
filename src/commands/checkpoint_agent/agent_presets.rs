@@ -38,6 +38,11 @@ pub trait AgentCheckpointPreset {
 // Claude Code to checkpoint preset
 pub struct ClaudePreset;
 
+fn tool_name_override() -> Option<String> {
+    env::var("GIT_AI_OVERRIDE_TOOL_NAME").ok()
+}
+
+
 impl AgentCheckpointPreset for ClaudePreset {
     fn run(&self, flags: AgentCheckpointFlags) -> Result<AgentRunResult, GitAiError> {
         // Parse claude_hook_stdin as JSON
@@ -109,8 +114,7 @@ impl AgentCheckpointPreset for ClaudePreset {
 
         // The filename should be a UUID
         let agent_id = AgentId {
-            tool: env::var("GIT_AI_CLAUDE_PRESET_TOOL_NAME")
-                .unwrap_or_else(|_| "claude".to_string()),
+            tool: tool_name_override().unwrap_or_else(|| "claude".to_string()),
             id: filename.to_string(),
             model: model.unwrap_or_else(|| "unknown".to_string()),
         };
@@ -444,7 +448,7 @@ impl AgentCheckpointPreset for GeminiPreset {
 
         // The filename should be a UUID
         let agent_id = AgentId {
-            tool: "gemini".to_string(),
+            tool: tool_name_override().unwrap_or_else(|| "gemini".to_string()),
             id: session_id.to_string(),
             model: model.unwrap_or_else(|| "unknown".to_string()),
         };
@@ -647,7 +651,7 @@ impl AgentCheckpointPreset for WindsurfPreset {
 
         // Windsurf doesn't expose model info in hooks yet — hardcode to "unknown"
         let agent_id = AgentId {
-            tool: "windsurf".to_string(),
+            tool: tool_name_override().unwrap_or_else(|| "windsurf".to_string()),
             id: trajectory_id.to_string(),
             model: "unknown".to_string(),
         };
@@ -861,7 +865,7 @@ impl AgentCheckpointPreset for ContinueCliPreset {
 
         // The session_id is the unique identifier for this conversation
         let agent_id = AgentId {
-            tool: "continue-cli".to_string(),
+            tool: tool_name_override().unwrap_or_else(|| "continue-cli".to_string()),
             id: session_id.to_string(),
             model,
         };
@@ -1082,7 +1086,7 @@ impl AgentCheckpointPreset for CodexPreset {
         };
 
         let agent_id = AgentId {
-            tool: "codex".to_string(),
+            tool: tool_name_override().unwrap_or_else(|| "codex".to_string()),
             id: session_id,
             model: model.unwrap_or_else(|| "unknown".to_string()),
         };
@@ -1438,7 +1442,7 @@ impl AgentCheckpointPreset for CursorPreset {
             // early return, we're just adding a human checkpoint.
             return Ok(AgentRunResult {
                 agent_id: AgentId {
-                    tool: "cursor".to_string(),
+                    tool: tool_name_override().unwrap_or_else(|| "cursor".to_string()),
                     id: conversation_id.clone(),
                     model: model.clone(),
                 },
@@ -1499,7 +1503,7 @@ impl AgentCheckpointPreset for CursorPreset {
         };
 
         let agent_id = AgentId {
-            tool: "cursor".to_string(),
+            tool: tool_name_override().unwrap_or_else(|| "cursor".to_string()),
             id: conversation_id,
             model,
         };
@@ -1980,7 +1984,7 @@ impl GithubCopilotPreset {
                 });
 
         let agent_id = AgentId {
-            tool: "github-copilot".to_string(),
+            tool: tool_name_override().unwrap_or_else(|| "github-copilot".to_string()),
             id: chat_session_id,
             model: detected_model.unwrap_or_else(|| "unknown".to_string()),
         };
@@ -2163,7 +2167,7 @@ impl GithubCopilotPreset {
         })?;
 
         let agent_id = AgentId {
-            tool: "github-copilot".to_string(),
+            tool: tool_name_override().unwrap_or_else(|| "github-copilot".to_string()),
             id: chat_session_id,
             model: detected_model.unwrap_or_else(|| "unknown".to_string()),
         };
@@ -2774,7 +2778,7 @@ impl AgentCheckpointPreset for DroidPreset {
         };
 
         let agent_id = AgentId {
-            tool: "droid".to_string(),
+            tool: tool_name_override().unwrap_or_else(|| "droid".to_string()),
             id: session_id,
             model,
         };
